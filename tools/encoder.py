@@ -28,19 +28,19 @@ class DataEncoder(object):
 
         ious = box_iou(anchor_boxes.view(-1,4),boxes/grid_size)
         ious = ious.view(fmsize,fmsize,5,num_boxes)
-        loc_targets = torch.zeros(fmsize,fmsize,5,4)
-        cls_targets = torch.zeros(fmsize,fmsize,5,20)
+        loc_targets = torch.zeros(5,4,fmsize,fmsize)
+        cls_targets = torch.zeros(5,20,fmsize,fmsize)
 
         for i in range(num_boxes):
             cx = int(bx[i])
             cy = int(by[i])
             _,max_idx = ious[cx,cy,:,i].max(0)
             j = max_idx[0]
-            cls_targets[cx,cy,j,labels[i]] = 1
+            cls_targets[j,labels[i],cy,cx] = 1
 
             tw = bw[i] / self.anchors[j][0]
             th = bh[i] / self.anchors[j][1]
-            loc_targets[cx,cy,j,:] = torch.Tensor([tx[i],ty[i],tw,th])
+            loc_targets[j,:,cy,cx] = torch.Tensor([tx[i],ty[i],tw,th])
         return loc_targets,cls_targets,boxes/grid_size
         
         

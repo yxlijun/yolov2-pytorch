@@ -186,10 +186,6 @@ class RandomSampleCrop(object):
 
                 return current_image, current_boxes, current_labels
 
-
-
-
-
 class Yoloaugmentation(object):
     def __init__(self,mean=(104,117,123)):
         super(Yoloaugmentation, self).__init__()
