@@ -68,8 +68,6 @@
 *.pth
 *.weights
 
-demo/*result*.jpg
-*.jpg
 *.cfg
 *.log
 *.npz
