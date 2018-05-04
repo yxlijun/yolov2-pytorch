@@ -13,8 +13,8 @@ class PriorBox(object):
         anchors = []
         anchor_num = len(self.anchor)
         for i,j in product(range(self.fmsize),repeat=2):
-            cx = i
-            cy = j
+            cx = j
+            cy = i
             for k in range(anchor_num):
                 cw = self.anchor[k][0]
                 ch = self.anchor[k][1]

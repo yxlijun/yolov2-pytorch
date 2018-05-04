@@ -7,7 +7,6 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 from utils.priorBox import PriorBox
 from data.config import cfg
-from itertools import product
 from utils.bbox_utils import box_iou
 
 class YoloLoss(nn.Module):
@@ -55,7 +54,7 @@ class YoloLoss(nn.Module):
         for i in range(N):
             box_pred = box_preds[i]   #[5*13*13,4]
             box_target = box_targets[i]  #[#obj,4]
-            iou_target = box_iou(box_pred, box_target)  # [5*13*13, #obj]   
+            iou_target = box_iou(box_pred, box_target)  # [5*13*13, #obj]
             iou_targets[i] = iou_target.max(1)[0].view(5,fmsize,fmsize)  # [5,13,13]
 
         mask = Variable(torch.ones(iou_preds.size())).cuda() * 0.1  # [N,5,13,13]
@@ -71,9 +70,3 @@ class YoloLoss(nn.Module):
 
         print('%f %f %f' % (loc_loss.data[0]/num_pos, iou_loss.data[0]/num_pos, cls_loss.data[0]/num_pos), end=' ')
         return (loc_loss + iou_loss + cls_loss) / num_pos
-
-    def priorbox(self,fmsize):
-        mean = []
-        for i,j in product(range(fmsize),repeat=2):
-            cx = i
-            cy = j    

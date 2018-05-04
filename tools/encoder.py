@@ -11,8 +11,8 @@ class DataEncoder(object):
 
     def encode(self,boxes,labels,priorBox):
         num_boxes = len(boxes)
-        fmsize = int(self.input_size / 32)
-        grid_size = int(self.input_size /fmsize)
+        fmsize = int(self.input_size / 32)   #13
+        grid_size = int(self.input_size /fmsize)    #32
         boxes*=self.input_size
         bx = (boxes[:,0]+boxes[:,2])*0.5 / grid_size
         by = (boxes[:,1]+boxes[:,3])*0.5 / grid_size
@@ -26,7 +26,7 @@ class DataEncoder(object):
 
         anchor_boxes = anchor_boxes.view(fmsize,fmsize,5,4)
 
-        ious = box_iou(anchor_boxes.view(-1,4),boxes/grid_size)
+        ious = box_iou(anchor_boxes.view(-1,4),boxes/grid_size)    #[13*13*5,num_boxes]
         ious = ious.view(fmsize,fmsize,5,num_boxes)
         loc_targets = torch.zeros(5,4,fmsize,fmsize)
         cls_targets = torch.zeros(5,20,fmsize,fmsize)

@@ -30,8 +30,8 @@ cfg.batch_size = 16
 
 cfg.fm_size = 13
 
-cfg.nms_threshold = 0.2
-cfg.score_threshold = 0.2
-cfg.iou_threshold = 0.2
+cfg.nms_threshold = 0.4
+cfg.score_threshold = 0.5
+cfg.iou_threshold = 0.4
 
 cfg.use_cuda=True   

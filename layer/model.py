@@ -10,9 +10,9 @@ class ConvLayer(nn.Module):
     def __init__(self,in_planes,out_planes,kernel_size = 3):
         super(ConvLayer, self).__init__()
         padding = kernel_size//2 if kernel_size==3 else 0
-        self.conv = nn.Conv2d(in_planes,out_planes,kernel_size=kernel_size,padding=padding,bias=True)
+        self.conv = nn.Conv2d(in_planes,out_planes,kernel_size=kernel_size,padding=padding,bias=False)
         self.bn = nn.BatchNorm2d(out_planes)
-        self.relu = nn.LeakyReLU(negative_slope=0.1, inplace=True)
+        self.relu = nn.LeakyReLU(0.1, inplace=True)
 
     def forward(self,x):
         out = self.relu(self.bn(self.conv(x)))
@@ -79,7 +79,7 @@ class Yolo(nn.Module):
         x1,x2 = self.darknet(x)
         out1 = self.conv1(x2)
         out2 = self.conv2(x1)
-        out = torch.cat((out1,out2),1)
+        out = torch.cat((out2,out1),1)
         out = self.conv(out)
         b,c,h,w = out.size()        #[N,125,13,13]
         feat = out.permute(0, 2, 3, 1).contiguous().view(b, -1, self.cfg.anchor_num, self.cfg.class_num + 5)
@@ -94,7 +94,8 @@ class Yolo(nn.Module):
             img_shape = Variable(torch.Tensor([[width, height, width, height]]))
             if cfg.use_cuda:
                 self.priorBox, img_shape = self.priorBox.cuda(), img_shape.cuda()
-            self.priorBox = self.priorBox.view(13*13,5,4).expand_as(box_pred)
+            #self.priorBox = self.priorBox.view(13*13,5,4).expand_as(box_pred)
+            self.priorBox = self.priorBox.view_as(box_pred)
             return Detect(self.cfg)(box_pred, box_conf, box_prob, self.priorBox, img_shape)
 
 if __name__=='__main__':

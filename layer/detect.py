@@ -19,7 +19,7 @@ class Detect(Function):
         if boxes.numel()==0:
             return boxes,scores,classes
         boxes = boxes*img_shape.repeat(boxes.size(0),1)
-        keep, count = nms(boxes, scores, self.nms_t,max_boxes)
+        keep, count = nms(boxes, scores, self.nms_t)
         boxes = boxes[keep[:count]]
         scores = scores[keep[:count]]
         classes = classes[keep[:count]]

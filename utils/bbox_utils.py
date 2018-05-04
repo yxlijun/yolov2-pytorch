@@ -42,7 +42,6 @@ def box_to_corners(boxes):
 
 def filter_box(boxes, box_conf, box_prob, threshold=.5):
     box_scores = box_conf.repeat(1, 1, 1, box_prob.size(3)) * box_prob
-    
     box_class_scores, box_classes = torch.max(box_scores, dim=3)
     prediction_mask = box_class_scores > threshold
     prediction_mask4 = prediction_mask.unsqueeze(3).expand(boxes.size())
@@ -57,9 +56,9 @@ def nms(boxes, scores, overlap=0.5, top_k=200):
     if boxes.numel()== 0:
         return keep
     x1 = boxes[:,0]
-    x2 = boxes[:,1]
+    x2 = boxes[:,2]
     y1 = boxes[:,1]
-    y2 = boxes[:,1]
+    y2 = boxes[:,3]
     area = torch.mul(x2-x1,y2-y1)
     v, idx = scores.sort(0)  # sort in ascending order
     idx = idx[-top_k:]  # indices of the top-k largest vals
@@ -94,7 +93,6 @@ def nms(boxes, scores, overlap=0.5, top_k=200):
         inter = w*h
         rem_areas = torch.index_select(area,0,idx)
         iou = inter/(area[i]+rem_areas-inter)
-        
         idx = idx[iou.le(overlap)]
 
     return keep,count
