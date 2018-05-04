@@ -38,4 +38,4 @@ this is a pytorch implementation of yolov2,including train and test phase.
 	python train.py.
 
 ## result show ##
- ![result show](./show.png)
+ ![result show](https://github.com/yxlijun/yolov2-pytorch/blob/master/demo/result/dog.jpg)
