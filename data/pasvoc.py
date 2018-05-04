@@ -65,12 +65,12 @@ class VOCDetection(data.Dataset):
         imgpath = self._imgpath%img_id
         target = ET.parse(annopath).getroot()
         img = cv2.imread(imgpath)
-        
         target = np.array(self.target_transform(target))
 
         boxes,labels = target[:,0:4],target[:,4]
-        
+
         img,boxes,labels = self.transform(img,boxes,labels)
+
         loc_targets,cls_targets,box_targets = self.data_encoder.encode(boxes,labels,self.priorBox)
         return img,loc_targets,cls_targets,box_targets
 
@@ -82,8 +82,8 @@ def collate_fn(batch):
 
 if __name__=='__main__':
     from data.config import cfg
-    from utils.YoloAugmentation import Yoloaugmentation
+    from utils.YoloAugmentation import Yoloaugmentation_train
     image_set = [('2007','trainval')]
-    dataset = VOCDetection(cfg.VOCroot,image_set,cfg,Yoloaugmentation(),AnnotationTransform(cfg))
-    loc_targets,cls_targets,box_targets = dataset[1]
+    dataset = VOCDetection(cfg.VOCroot,image_set,cfg,Yoloaugmentation_train(),AnnotationTransform(cfg))
+    images,loc_targets,cls_targets,box_targets = dataset[1]
     print len(dataset),loc_targets.size(),cls_targets.size(),box_targets.size()

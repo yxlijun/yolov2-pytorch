@@ -44,4 +44,3 @@ class DataEncoder(object):
         return loc_targets,cls_targets,boxes/grid_size
         
         
-        

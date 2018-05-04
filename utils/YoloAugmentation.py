@@ -79,7 +79,7 @@ class ToPercentCoords(object):
 
 class ToTensor(object):
     def __call__(self,img,boxes=None,lables=None):
-        return torch.from_numpy(img),torch.from_numpy(boxes),torch.from_numpy(lables)
+        return torch.from_numpy(img).permute(2,0,1),torch.from_numpy(boxes),torch.from_numpy(lables)
 
 
 
@@ -186,9 +186,9 @@ class RandomSampleCrop(object):
 
                 return current_image, current_boxes, current_labels
 
-class Yoloaugmentation(object):
+class Yoloaugmentation_train(object):
     def __init__(self,mean=(104,117,123)):
-        super(Yoloaugmentation, self).__init__()
+        super(Yoloaugmentation_train, self).__init__()
         self.mean = mean
         self.augment = Compose([
             ConvertFromInts(),
@@ -201,3 +201,18 @@ class Yoloaugmentation(object):
 
     def __call__(self,img,boxes,labels):
         return self.augment(img,boxes,labels)
+
+
+class Yoloaugmentation_test(object):
+    def __init__(self,mean=(104,117,123)):
+        super(Yoloaugmentation_test, self).__init__()
+        self.mean = mean
+        self.augment = Compose([
+            ConvertFromInts(),
+            ToPercentCoords(),
+            Resize(cfg),
+            ToTensor()
+        ])
+
+    def __call__(self,img,boxes,labels):
+        return self.augment(img,boxes,labels) 
